@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getConnection } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // session-safe
+import { authOptions } from "@/lib/auth"; 
 
 export default async function DetailPage(props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;

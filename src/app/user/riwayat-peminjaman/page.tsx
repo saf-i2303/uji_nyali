@@ -18,7 +18,7 @@ type Borrowing = {
   books: {
     id: number;
     title: string;
-    author: string;
+    author: string; 
     image: string;
     quantity: number;
   }[];
@@ -28,10 +28,7 @@ const formatDate = (dateStr: string) => {
   const d = new Date(dateStr);
   return `${d.getFullYear()}-${(d.getMonth() + 1)
     .toString()
-    .padStart(2, "0")}-${d
-    .getDate()
-    .toString()
-    .padStart(2, "0")}`;
+    .padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}`;
 };
 
 export default function RiwayatPeminjamanPage() {
@@ -45,11 +42,9 @@ export default function RiwayatPeminjamanPage() {
 
     const fetchBorrowings = async () => {
       try {
-        const res = await fetch(
-          `/api/borrowings?user_id=${session.user.id}`
-        );
+        const res = await fetch(`/api/borrowings?user_id=${session.user.id}`);
 
-        if (!res.ok) throw new Error("Gagal mengambil data");
+        if (!res.ok) throw new Error("Gagal mengambil data peminjaman");
 
         const data = await res.json();
         setBorrowings(data);
@@ -68,13 +63,13 @@ export default function RiwayatPeminjamanPage() {
       case "menunggu konfirmasi":
         return "bg-yellow-500";
       case "disetujui":
-        return "bg-green-500";
+        return "bg-green-600";
       case "dipinjam":
-        return "bg-blue-500";
+        return "bg-blue-600";
       case "terlambat":
         return "bg-red-600";
       case "dikembalikan":
-        return "bg-gray-500";
+        return "bg-gray-600";
       case "ditolak":
         return "bg-gray-400";
       default:
@@ -119,9 +114,7 @@ export default function RiwayatPeminjamanPage() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : borrowings.length === 0 ? (
-        <p className="text-gray-600">
-          Belum ada riwayat peminjaman.
-        </p>
+        <p className="text-gray-600">Belum ada riwayat peminjaman.</p>
       ) : (
         <div className="grid gap-6">
           {borrowings.map((b) => (
@@ -172,7 +165,7 @@ export default function RiwayatPeminjamanPage() {
                       <div>
                         <p className="font-semibold">{book.title}</p>
                         <p className="text-sm text-gray-600">
-                          {book.author}
+                          {book.author} {/* AUTHOR TETAP ADA */}
                         </p>
                         <p className="text-sm mt-1">
                           Jumlah: {book.quantity}

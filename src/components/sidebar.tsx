@@ -20,20 +20,21 @@ type NavItem = {
 
 // ======== MENU LIST ========
 const mainMenu: NavItem[] = [
+  { name: "Dashboard Admin", icon: <History size={18} />, path: "/admin", access: ["admin"] },
   { name: "Dashboard Petugas", icon: <History size={18} />, path: "/petugas/dashboard", access: ["guru"] },
   { name: "Koleksi Buku", icon: <BookOpen size={18} />, path: "/user", access: ["siswa"] },
   { name: "Favorite", icon: <Heart size={18} />, path: "/user/favorite", access: ["siswa"] },
   { name: "Panduan Peminjaman", icon: <CheckCircle size={18} />, path: "/user/panduan", access: ["siswa"] },
   { name: "manejemen peminjaman", icon: <History size={18} />, path: "/petugas/manajemen-peminjaman", access: [ "guru"] },
-  { name: "pengembalian", icon: <CheckCircle size={18} />, path: "/riwayat-pengembalian", access: ["admin", "guru", "siswa"] },
-  { name: "Riwayat Peminjaman", icon: <CheckCircle size={18} />, path: "/riwayat-pengembalian", access: ["guru"] },
+  { name: "kelola buku", icon: <CheckCircle size={18} />, path: "/admin/books", access: ["admin"] },
+  { name: "data pengguna", icon: <CheckCircle size={18} />, path: "/admin/users", access: ["admin"] },
+  { name: "pengembalian", icon: <CheckCircle size={18} />, path: "/petugas/pengembalian", access: ["guru"] },
+  
 ];
 
 const otherMenu: NavItem[] = [
-  { name: "Dashboard Admin", icon: <History size={18} />, path: "/admin", access: ["admin"] },
-  { name: "Riwayat Peminjaman", icon: <History size={18} />, path: "/user/riwayat-peminjaman", access: [ "siswa"] },
-  { name: "Riwayat Pengembalian", icon: <CheckCircle size={18} />, path: "/riwayat-pengembalian", access: ["siswa"] },
-  { name: "Keluar", icon: <LogOut size={18} />, path: "/logout", access: ["admin", "guru", "siswa"] },
+  { name: "Riwayat", icon: <History size={18} />, path: "/user/riwayat-peminjaman", access: [ "siswa"] },
+  { name: "Riwayat Pengembalian", icon: <CheckCircle size={18} />, path: "/riwayat-pengembalian", access: ["admin"] },
 ];
 
 // ======== SIDEBAR COMPONENT ========

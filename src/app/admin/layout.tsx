@@ -2,8 +2,8 @@
 
 import React from "react";
 import { useSidebar } from "@/context/SidebarContext";
-import AppHeader from "@/layout/AppHeader";
-import AppSidebar from "@/components/sidebar"; // pastikan path ini benar
+import AppHeader from "@/components/header";
+import AppSidebar from "@/components/sidebar"; 
 import Backdrop from "@/layout/Backdrop";
 
 export default function PetugasLayout({ children }: { children: React.ReactNode }) {
