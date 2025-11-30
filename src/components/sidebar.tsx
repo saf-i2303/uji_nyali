@@ -5,7 +5,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
-import { BookOpen, Heart, History, CheckCircle, LogOut } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  BookOpen, 
+  Heart, 
+  HelpCircle, 
+  History, 
+  RefreshCw, 
+  Users, 
+  Settings 
+} from "lucide-react";
 
 // Role type
 type Role = "admin" | "guru" | "siswa";
@@ -20,21 +29,75 @@ type NavItem = {
 
 // ======== MENU LIST ========
 const mainMenu: NavItem[] = [
-  { name: "Dashboard Admin", icon: <History size={18} />, path: "/admin", access: ["admin"] },
-  { name: "Dashboard Petugas", icon: <History size={18} />, path: "/petugas/dashboard", access: ["guru"] },
-  { name: "Koleksi Buku", icon: <BookOpen size={18} />, path: "/user", access: ["siswa"] },
-  { name: "Favorite", icon: <Heart size={18} />, path: "/user/favorite", access: ["siswa"] },
-  { name: "Panduan Peminjaman", icon: <CheckCircle size={18} />, path: "/user/panduan", access: ["siswa"] },
-  { name: "manejemen peminjaman", icon: <History size={18} />, path: "/petugas/manajemen-peminjaman", access: [ "guru"] },
-  { name: "kelola buku", icon: <CheckCircle size={18} />, path: "/admin/books", access: ["admin"] },
-  { name: "data pengguna", icon: <CheckCircle size={18} />, path: "/admin/users", access: ["admin"] },
-  { name: "pengembalian", icon: <CheckCircle size={18} />, path: "/petugas/pengembalian", access: ["guru"] },
-  
+  { 
+    name: "Dashboard Admin", 
+    icon: <LayoutDashboard size={18} />, 
+    path: "/admin", 
+    access: ["admin"] 
+  },
+  { 
+    name: "Dashboard Petugas", 
+    icon: <LayoutDashboard size={18} />, 
+    path: "/petugas/dashboard", 
+    access: ["guru"] 
+  },
+  { 
+    name: "Koleksi Buku", 
+    icon: <BookOpen size={18} />, 
+    path: "/user", 
+    access: ["siswa"] 
+  },
+  { 
+    name: "Favorite", 
+    icon: <Heart size={18} />, 
+    path: "/user/favorite", 
+    access: ["siswa"] 
+  },
+  { 
+    name: "Panduan Peminjaman", 
+    icon: <HelpCircle size={18} />, 
+    path: "/user/panduan", 
+    access: ["siswa"] 
+  },
+  { 
+    name: "Manajemen Peminjaman", 
+    icon: <Settings size={18} />, 
+    path: "/petugas/manajemen-peminjaman", 
+    access: ["guru"] 
+  },
+  { 
+    name: "Kelola Buku", 
+    icon: <BookOpen size={18} />, 
+    path: "/admin/books", 
+    access: ["admin"] 
+  },
+  { 
+    name: "Data Pengguna", 
+    icon: <Users size={18} />, 
+    path: "/admin/users", 
+    access: ["admin"] 
+  },
+  { 
+    name: "Pengembalian", 
+    icon: <RefreshCw size={18} />, 
+    path: "/petugas/pengembalian", 
+    access: ["guru"] 
+  },
 ];
 
 const otherMenu: NavItem[] = [
-  { name: "Riwayat", icon: <History size={18} />, path: "/user/riwayat-peminjaman", access: [ "siswa"] },
-  { name: "Riwayat Pengembalian", icon: <CheckCircle size={18} />, path: "/riwayat-pengembalian", access: ["admin"] },
+  { 
+    name: "Riwayat", 
+    icon: <History size={18} />, 
+    path: "/user/riwayat-peminjaman", 
+    access: ["siswa"] 
+  },
+  { 
+    name: "Riwayat Pengembalian", 
+    icon: <History size={18} />, 
+    path: "/riwayat-pengembalian", 
+    access: ["admin"] 
+  },
 ];
 
 // ======== SIDEBAR COMPONENT ========
@@ -44,6 +107,9 @@ export default function AppSidebar({ userRole }: { userRole: Role }) {
   const isOpen = isExpanded || isHovered || isMobileOpen;
 
   const isActive = useCallback((path: string) => pathname === path, [pathname]);
+
+  // Check if user should see "Lainnya" section
+  const shouldShowOtherMenu = otherMenu.some(item => item.access?.includes(userRole));
 
   return (
     <aside
@@ -92,13 +158,15 @@ export default function AppSidebar({ userRole }: { userRole: Role }) {
           isOpen={isOpen}
           isActive={isActive}
         />
-        <MenuSection
-          userRole={userRole}
-          title="Lainnya"
-          items={otherMenu}
-          isOpen={isOpen}
-          isActive={isActive}
-        />
+        {shouldShowOtherMenu && (
+          <MenuSection
+            userRole={userRole}
+            title="Lainnya"
+            items={otherMenu}
+            isOpen={isOpen}
+            isActive={isActive}
+          />
+        )}
       </div>
     </aside>
   );
@@ -134,20 +202,18 @@ function MenuSection({
             <li key={item.name}>
               <Link
                 href={item.path}
-                className={`menu-item group ${
-                  isActive(item.path) ? "menu-item-active" : "menu-item-inactive"
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                  !isOpen ? "lg:justify-center" : "justify-start"
+                } ${
+                  isActive(item.path)
+                    ? "bg-[#281A14] text-white shadow-md"
+                    : "text-[#281A14] hover:bg-[#281A14]/10"
                 }`}
               >
-                <span
-                  className={`${
-                    isActive(item.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
-                  }`}
-                >
+                <span className="flex-shrink-0">
                   {item.icon}
                 </span>
-                {isOpen && <span className="menu-item-text">{item.name}</span>}
+                {isOpen && <span className="text-sm font-medium">{item.name}</span>}
               </Link>
             </li>
           ) : null

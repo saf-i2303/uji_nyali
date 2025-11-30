@@ -17,7 +17,7 @@ type NavItem = {
   link?: string;
 };
 
-const items: NavItem[] = [
+const navItems: NavItem[] = [
   { name: "Beranda", scrollTo: "hero" },
   { name: "Tentang", scrollTo: "tentang" },
   { name: "Layanan", scrollTo: "layanan" },
@@ -27,58 +27,56 @@ const items: NavItem[] = [
 export default function MyNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // Smooth scroll dengan offset navbar
+  /** Smooth Scroll Handler */
   const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (!el) return;
+    const target = document.getElementById(id);
+    if (!target) return;
 
-    const navbarHeight = 64; // tinggi navbar, sesuaikan
-    const top =
-      window.pageYOffset +
-      el.getBoundingClientRect().top -
-      navbarHeight;
+    const offset = 70; // tinggi navbar
+    const position =
+      window.scrollY + target.getBoundingClientRect().top - offset;
 
-    window.scrollTo({
-      top,
-      behavior: "smooth", // ini sudah smooth natural
-    });
+    window.scrollTo({ top: position, behavior: "smooth" });
   };
 
   return (
     <Navbar className="fixed top-0 left-1/2 -translate-x-1/2 w-[90%] z-50 font-sans">
-      <NavBody className="w-full border-b border-gray-300 shadow-md rounded-xl px-5 py-3 flex items-center justify-between bg-white transition-all duration-300">
-        {/* LOGO */}
+
+      {/* DESKTOP NAVBAR */}
+      <NavBody className="hidden md:flex w-full border-b border-gray-200 shadow-md rounded-xl px-6 py-3 items-center justify-between bg-white">
+
+        {/* Logo */}
         <h1 className="text-2xl font-extrabold text-[#281A14] tracking-wide select-none">
           Perpusan
         </h1>
 
-        {/* DESKTOP MENU */}
-        <div className="hidden md:flex gap-6">
-          {items.map((item, i) =>
+        {/* Desktop Menu */}
+        <div className="flex gap-6">
+          {navItems.map((item) => (
             item.scrollTo ? (
               <button
-                key={i}
+                key={item.name}
                 onClick={() => scrollToSection(item.scrollTo!)}
-                className="text-[#281A14] hover:text-[#7C4F39] transition-colors duration-150 font-medium"
+                className="text-[#281A14] hover:text-[#7C4F39] transition font-medium"
               >
                 {item.name}
               </button>
             ) : (
               <a
-                key={i}
+                key={item.name}
                 href={item.link}
-                className="text-[#281A14] hover:text-[#7C4F39] transition-colors duration-150 font-medium"
+                className="text-[#281A14] hover:text-[#7C4F39] transition font-medium"
               >
                 {item.name}
               </a>
             )
-          )}
+          ))}
         </div>
 
-        {/* LOGIN BUTTON */}
+        {/* Login Button */}
         <NavbarButton
           href="/login"
-          className="font-semibold bg-[#281A14] hover:bg-[#7C4F39] text-white px-4 py-1"
+          className="font-semibold bg-[#281A14] hover:bg-[#7C4F39] text-white px-6 py-2 rounded-lg shadow-md"
         >
           Masuk
         </NavbarButton>
@@ -91,39 +89,37 @@ export default function MyNavbar() {
             Perpusan
           </h1>
 
-          <MobileNavToggle
-            isOpen={isOpen}
-            onClick={() => setIsOpen(!isOpen)}
-          />
+          <MobileNavToggle isOpen={isOpen} onClick={() => setIsOpen(!isOpen)} />
         </MobileNavHeader>
 
         <MobileNavMenu isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          {items.map((item, i) =>
+          {navItems.map((item) =>
             item.scrollTo ? (
               <button
-                key={i}
+                key={item.name}
                 onClick={() => {
                   scrollToSection(item.scrollTo!);
                   setIsOpen(false);
                 }}
-                className="text-[#281A14] py-2 font-medium text-left hover:text-gray-600 transition-colors"
+                className="text-[#281A14] py-2 text-left font-medium hover:text-gray-600"
               >
                 {item.name}
               </button>
             ) : (
               <a
-                key={i}
+                key={item.name}
                 href={item.link}
-                className="text-[#281A14] py-2 font-medium hover:text-gray-600 transition-colors"
+                className="text-[#281A14] py-2 font-medium hover:text-gray-600"
               >
                 {item.name}
               </a>
             )
           )}
 
+          {/* Mobile Login Button */}
           <a
             href="/login"
-            className="mt-4 px-4 py-2 bg-[#281A14] rounded-md text-white text-center font-semibold"
+            className="mt-4 px-6 py-2 bg-[#281A14] rounded-lg text-white text-center font-semibold shadow-md"
           >
             Masuk
           </a>

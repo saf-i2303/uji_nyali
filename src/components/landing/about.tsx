@@ -7,7 +7,7 @@ export default function AboutSection() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
 
         {/* TEXT */}
-        <div>
+        <div data-aos="fade-up-right">
           <p className="text-[#7C4F39] font-semibold tracking-wide mb-2">
             KAMI ADALAH
           </p>
@@ -32,7 +32,7 @@ export default function AboutSection() {
         </div>
 
         {/* IMAGE */}
-        <div className="w-full">
+        <div data-aos="zoom-in-left" className="w-full">
           <img
             src="/images/picture/about.png"
             alt="Perpustakaan Sekolah"

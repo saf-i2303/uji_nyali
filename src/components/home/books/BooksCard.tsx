@@ -17,72 +17,70 @@ export type BookCardProps = {
 
 export default function BookCard(props: BookCardProps) {
   const { id, title, author, image, category, year, rating } = props;
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const [fav, setFav] = useState(false);
-
-  // Cek awal: apakah buku ini sudah favorit
   useEffect(() => {
-    const stored = localStorage.getItem("favorites");
-    if (stored) {
-      const favorites = JSON.parse(stored);
-      setFav(favorites.some((b: any) => b.id === id));
-    }
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    setIsFavorite(favorites.some((book: BookCardProps) => book.id === id));
   }, [id]);
 
-  const toggleFavorite = (e: any) => {
+  const handleToggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
+    const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+    
+    const updatedFavorites = isFavorite
+      ? favorites.filter((book: BookCardProps) => book.id !== id)
+      : [...favorites, props];
 
-    let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-
-    if (fav) {
-      // Remove favorite
-      favorites = favorites.filter((b: any) => b.id !== id);
-    } else {
-      // Add new favorite
-      favorites.push(props);
-    }
-
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    setFav(!fav);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    setIsFavorite(!isFavorite);
   };
 
   return (
-    <Link href={`/user/detail-buku/${id}`} className="w-full max-w-[220px] group block">
-      <div className="relative w-full h-[300px] rounded-xl overflow-hidden shadow-md cursor-pointer">
+    <Link href={`/user/detail-buku/${id}`} className="group block w-full max-w-60">
+      <div className="relative w-full aspect-2/3 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300">
         <Image
           src={image}
           alt={title}
           fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
+        
+        <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        <span className="absolute bottom-2 left-2 bg-blue-800/80 text-white text-xs px-3 py-1 rounded-md shadow">
-          {category}
-        </span>
+        <div className="absolute top-3 left-3 right-3 flex items-start justify-between z-10">
+          <span className="bg-[#281A14] text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm">
+            {category}
+          </span>
 
-        {/* HEART ICON */}
-        <button
-          onClick={toggleFavorite}
-          className="absolute top-2 right-2 bg-white/70 backdrop-blur-sm p-1.5 rounded-full shadow hover:bg-white transition"
-        >
-          <Heart
-            size={18}
-            className={fav ? "fill-red-500 text-red-500" : "text-gray-700"}
-          />
-        </button>
+          <button
+            onClick={handleToggleFavorite}
+            className="bg-white/90 backdrop-blur-md p-2 rounded-full shadow-lg hover:scale-110 hover:bg-white transition-all duration-200"
+            aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+          >
+            <Heart
+              size={18}
+              className={isFavorite ? "fill-red-500 text-red-500" : "text-gray-700"}
+            />
+          </button>
+        </div>
+
+        <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+          <div className="flex items-center gap-1 bg-white/95 backdrop-blur-sm px-2.5 py-1 rounded-full shadow">
+            <Star size={14} className="text-yellow-500 fill-yellow-500" />
+            <span className="text-sm font-semibold text-gray-800">{rating}</span>
+          </div>
+          <span className="text-xs text-white font-medium bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-full">
+            {year}
+          </span>
+        </div>
       </div>
 
-      <div className="mt-2">
-        <h3 className="font-semibold text-[15px] line-clamp-2 leading-tight">{title}</h3>
-        <p className="text-sm text-gray-500 line-clamp-1">{author}</p>
-
-        <div className="flex items-center justify-between mt-1">
-          <div className="flex items-center gap-1">
-            <Star size={16} className="text-yellow-500 fill-yellow-500" />
-            <span className="text-sm font-medium">{rating}</span>
-          </div>
-          <span className="text-xs text-gray-500">{year}</span>
-        </div>
+      <div className="mt-3 px-1">
+        <h3 className="font-bold text-base line-clamp-2 leading-snug text-gray-900 group-hover:text-blue-700 transition-colors">
+          {title}
+        </h3>
+        <p className="text-sm text-gray-600 line-clamp-1 mt-1">{author}</p>
       </div>
     </Link>
   );
