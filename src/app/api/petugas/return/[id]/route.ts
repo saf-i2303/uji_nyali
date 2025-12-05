@@ -10,6 +10,7 @@ export async function PUT(
     const url = new URL(req.url);
     const action = url.searchParams.get("action");
 
+    // Aksi yang valid hanya "confirm"
     if (action !== "confirm") {
       return NextResponse.json(
         { error: "Invalid action" },
@@ -19,9 +20,11 @@ export async function PUT(
 
     const db = await getConnection();
 
-    // Ambil data peminjaman
+    // Ambil data peminjaman utama
     const [[borrow]]: any = await db.query(
-      `SELECT id, due_date, status FROM borrowings WHERE id = ?`,
+      `SELECT id, due_date, status 
+       FROM borrowings 
+       WHERE id = ?`,
       [id]
     );
 
@@ -39,44 +42,43 @@ export async function PUT(
       );
     }
 
-    // Ambil detail buku untuk mengembalikan stok
+    // Ambil detail :
     const [details]: any = await db.query(
-      `SELECT book_id, quantity FROM borrowing_details WHERE borrowing_id = ?`,
+      `SELECT book_id, quantity 
+       FROM borrowing_details 
+       WHERE borrowing_id = ?`,
       [id]
     );
 
-    // Hitung denda
-    const dueDate = new Date(borrow.due_date);
+    // Hitung denda (fine)
     const today = new Date();
-    const msPerDay = 1000 * 3600 * 24;
-
+    const dueDate = new Date(borrow.due_date);
     const diffMs = today.getTime() - dueDate.getTime();
-    const diffDays = diffMs > 0 ? Math.ceil(diffMs / msPerDay) : 0;
+    const diffDays =
+      diffMs > 0 ? Math.ceil(diffMs / (1000 * 3600 * 24)) : 0;
 
-    const fine = diffDays * 1000; // Rp 1000 per hari
+    const fine = diffDays * 1000; // 1000 / hari
 
     await db.query("START TRANSACTION");
 
-    // Tambah stok buku
+    // Tambahkan kembali stok buku
     for (const item of details) {
       await db.query(
         `UPDATE books 
-         SET stock = stock + ? 
+         SET stock = stock + ?
          WHERE id = ?`,
         [item.quantity, item.book_id]
       );
     }
 
-    // Update status pengembalian
+    // Update status peminjaman
     await db.query(
-      `
-      UPDATE borrowings 
-      SET 
-        status = ?,
-        return_date = NOW(),
-        fine = ?
-      WHERE id = ?
-    `,
+      `UPDATE borrowings
+       SET 
+         status = ?,
+         return_date = NOW(),
+         fine = ?
+       WHERE id = ?`,
       [diffDays > 0 ? "terlambat" : "dikembalikan", fine, id]
     );
 
@@ -84,7 +86,7 @@ export async function PUT(
 
     return NextResponse.json({
       message: "Pengembalian berhasil dikonfirmasi",
-      fine: fine,
+      fine,
       status: diffDays > 0 ? "terlambat" : "dikembalikan",
     });
 

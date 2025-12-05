@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const userId = url.searchParams.get("user_id");
@@ -16,6 +15,19 @@ export async function GET(req: Request) {
   try {
     const db = await getConnection();
 
+    // 1️⃣ AUTO UPDATE STATUS TERLAMBAT
+    await db.query(
+      `
+      UPDATE borrowings
+      SET status = 'terlambat'
+      WHERE user_id = ?
+      AND status = 'dipinjam'
+      AND due_date < CURDATE()
+    `,
+      [userId]
+    );
+
+    // 2️⃣ AMBIL DATA SETELAH UPDATE
     const [rows]: any = await db.query(
       `
       SELECT 
@@ -37,7 +49,7 @@ export async function GET(req: Request) {
       [userId]
     );
 
-    // GROUPING PER PEMINJAMAN
+    // 3️⃣ GROUPING PER PEMINJAMAN
     const borrowingsMap: Record<number, any> = {};
 
     rows.forEach((row: any) => {
@@ -69,7 +81,6 @@ export async function GET(req: Request) {
     );
   }
 }
-
 
 export async function POST(req: Request) {
   try {

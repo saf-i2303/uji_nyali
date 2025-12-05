@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     language,
     stock,
     location_code,
-    condition_book,   // ⬅️ sudah benar
+    condition_book,   
     createdat,
   } = data;
 
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       language,
       stock,
       location_code,
-      condition_book,  // ⬅️ ini juga
+      condition_book,  
       createdat,
     ]
   );

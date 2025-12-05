@@ -10,30 +10,47 @@ export default function BookDetailAdmin() {
 
   const [book, setBook] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
+  // Fetch detail buku
   const fetchBook = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`/api/buku/${id}`);
+      if (!res.ok) throw new Error("Gagal memuat buku");
       const data = await res.json();
       setBook(data.data ?? data);
+    } catch (err) {
+      console.error(err);
+      setBook(null);
     } finally {
       setLoading(false);
     }
   };
 
+  // Delete buku
   const handleDelete = async () => {
     if (!confirm("Yakin ingin menghapus buku?")) return;
 
-    await fetch(`/api/buku/${id}`, { method: "DELETE" });
-    router.push("/admin/books");
+    try {
+      setDeleting(true);
+      const res = await fetch(`/api/buku/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Gagal menghapus buku");
+      router.push("/admin/books");
+    } catch (err) {
+      console.error(err);
+      alert("Terjadi kesalahan saat menghapus buku");
+    } finally {
+      setDeleting(false);
+    }
   };
 
   useEffect(() => {
     fetchBook();
-  }, []);
+  }, [id]);
 
   if (loading) return <p className="p-8">Loading...</p>;
-  if (!book) return <p className="p-8">Buku tidak ditemukan</p>;
+  if (!book) return <p className="p-8 text-red-600">Buku tidak ditemukan</p>;
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
@@ -78,7 +95,7 @@ export default function BookDetailAdmin() {
           <div className="mt-6">
             <h3 className="font-semibold mb-1">Deskripsi:</h3>
             <p className="text-gray-700 leading-relaxed">
-              {book.description}
+              {book.description || "Deskripsi belum tersedia"}
             </p>
           </div>
 
@@ -93,9 +110,12 @@ export default function BookDetailAdmin() {
 
             <button
               onClick={handleDelete}
-              className="px-4 py-2 bg-red-600 text-white rounded-md"
+              disabled={deleting}
+              className={`px-4 py-2 rounded-md text-white ${
+                deleting ? "bg-gray-400" : "bg-red-600 hover:bg-red-700"
+              }`}
             >
-              Hapus
+              {deleting ? "Menghapus..." : "Hapus"}
             </button>
           </div>
         </div>

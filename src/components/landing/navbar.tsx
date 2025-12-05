@@ -2,13 +2,7 @@
 
 import React, { useState } from "react";
 import {
-  Navbar,
-  NavBody,
-  MobileNav,
-  MobileNavHeader,
-  MobileNavMenu,
-  MobileNavToggle,
-  NavbarButton,
+  Navbar,NavBody,MobileNav,MobileNavHeader,MobileNavMenu,MobileNavToggle,NavbarButton,
 } from "@/components/ui/Navbar/resizable-navbar";
 
 type NavItem = {
@@ -27,12 +21,12 @@ const navItems: NavItem[] = [
 export default function MyNavbar() {
   const [isOpen, setIsOpen] = useState(false);
 
-  /** Smooth Scroll Handler */
+
   const scrollToSection = (id: string) => {
     const target = document.getElementById(id);
     if (!target) return;
 
-    const offset = 70; // tinggi navbar
+    const offset = 70; 
     const position =
       window.scrollY + target.getBoundingClientRect().top - offset;
 
@@ -41,10 +35,7 @@ export default function MyNavbar() {
 
   return (
     <Navbar className="fixed top-0 left-1/2 -translate-x-1/2 w-[90%] z-50 font-sans">
-
-      {/* DESKTOP NAVBAR */}
       <NavBody className="hidden md:flex w-full border-b border-gray-200 shadow-md rounded-xl px-6 py-3 items-center justify-between bg-white">
-
         {/* Logo */}
         <h1 className="text-2xl font-extrabold text-[#281A14] tracking-wide select-none">
           Perpusan

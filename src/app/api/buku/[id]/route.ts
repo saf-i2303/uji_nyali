@@ -1,43 +1,46 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-export async function GET(
-  req: Request,
-  context: { params: { id: string } }
-) {
+export async function DELETE(req: Request, context: { params: any }) {
   try {
-    const { id } = context.params;
+    
+    const { id } = await context.params;
 
     const db = await getConnection();
-    const [rows]: any = await db.query(
-      "SELECT * FROM books WHERE id = ?",
-      [id]
-    );
+    const [result]: any = await db.query("DELETE FROM books WHERE id = ?", [id]);
+
+    if (result.affectedRows === 0) {
+      return NextResponse.json({ message: "Book not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Book deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  }
+}
+
+export async function GET(req: Request, context: { params: any }) {
+  try {
+    const { id } = await context.params;
+
+    const db = await getConnection();
+    const [rows]: any = await db.query("SELECT * FROM books WHERE id = ?", [id]);
 
     if (!rows.length) {
-      return NextResponse.json(
-        { message: "Book not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Book not found" }, { status: 404 });
     }
 
     return NextResponse.json(rows[0]);
   } catch (error) {
-    console.error("GET /books/:id error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error(error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }
 
-export async function PUT(
-  req: Request,
-  context: { params: { id: string } }
-) {
+export async function PUT(req: Request, context: { params: any }) {
   try {
-    const { id } = context.params;
-
+    const { id } = await context.params;
     const db = await getConnection();
     const data = await req.json();
 
@@ -54,27 +57,14 @@ export async function PUT(
       language,
       stock,
       location_code,
-      condition_book,   // ⬅️ pakai ini
+      condition_book,
       createdat,
     } = data;
 
-    const [result] = await db.query(
-      `UPDATE books SET
-          title = ?, 
-          author = ?, 
-          publisher = ?, 
-          year = ?, 
-          isbn = ?, 
-          category = ?, 
-          description = ?, 
-          image = ?, 
-          pages = ?, 
-          language = ?, 
-          stock = ?, 
-          location_code = ?, 
-          condition_book = ?,   -- ⬅️ sudah disesuaikan
-          createdat = ?
-        WHERE id = ?`,
+    const [result]: any = await db.query(
+      `UPDATE books SET 
+        title = ?, author = ?, publisher = ?, year = ?, isbn = ?, category = ?, description = ?, image = ?, pages = ?, language = ?, stock = ?, location_code = ?, condition_book = ?, createdat = ?
+      WHERE id = ?`,
       [
         title,
         author,
@@ -88,22 +78,19 @@ export async function PUT(
         language,
         stock,
         location_code,
-        condition_book,  // ⬅️ ini penting
+        condition_book,
         createdat,
         id,
       ]
     );
 
-    if ((result as any).affectedRows === 0) {
+    if (result.affectedRows === 0) {
       return NextResponse.json({ message: "Book not found" }, { status: 404 });
     }
 
     return NextResponse.json({ message: "Book updated successfully" });
   } catch (error) {
-    console.error("PUT /books/:id error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error(error);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
   }
 }

@@ -8,30 +8,57 @@ export default function EditBook() {
   const { id } = useParams();
   const router = useRouter();
 
-  const [book, setBook] = useState(null);
+  const [book, setBook] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
+  // Ambil data buku
   useEffect(() => {
-    fetch(`/api/buku/${id}`)
-      .then((res) => res.json())
-      .then((data) => setBook(data));
+    const fetchBook = async () => {
+      try {
+        const res = await fetch(`/api/buku/${id}`, { cache: "no-store" });
+        if (!res.ok) throw new Error("Gagal mengambil data buku");
+        const data = await res.json();
+        setBook(data.data ?? data);
+      } catch (err) {
+        console.error(err);
+        alert("Gagal mengambil data buku");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBook();
   }, [id]);
 
   const handleSubmit = async (data: any) => {
-    await fetch(`/api/buku/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    setSubmitting(true);
+    try {
+      const res = await fetch(`/api/buku/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-    router.push("/admin/books");
+      if (!res.ok) throw new Error("Gagal memperbarui buku");
+
+      alert("Buku berhasil diperbarui!");
+      router.push("/admin/books"); // Bisa diganti ke detail jika mau
+    } catch (err) {
+      console.error(err);
+      alert("Terjadi kesalahan saat menyimpan buku");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  if (!book) return <p className="p-6">Loading...</p>;
+  if (loading) return <p className="p-6">Loading data buku...</p>;
+  if (!book) return <p className="p-6">Buku tidak ditemukan.</p>;
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Edit Buku</h1>
-      <BookForm initialData={book} onSubmit={handleSubmit} />
+      <BookForm initialData={book} onSubmit={handleSubmit} disabled={submitting} />
     </div>
   );
 }

@@ -36,9 +36,9 @@ const mainMenu: NavItem[] = [
     access: ["admin"] 
   },
   { 
-    name: "Dashboard Petugas", 
+    name: "Dashboard petugas", 
     icon: <LayoutDashboard size={18} />, 
-    path: "/petugas/dashboard", 
+    path: "/petugas", 
     access: ["guru"] 
   },
   { 
@@ -92,12 +92,7 @@ const otherMenu: NavItem[] = [
     path: "/user/riwayat-peminjaman", 
     access: ["siswa"] 
   },
-  { 
-    name: "Riwayat Pengembalian", 
-    icon: <History size={18} />, 
-    path: "/riwayat-pengembalian", 
-    access: ["admin"] 
-  },
+ 
 ];
 
 // ======== SIDEBAR COMPONENT ========
@@ -210,7 +205,7 @@ function MenuSection({
                     : "text-[#281A14] hover:bg-[#281A14]/10"
                 }`}
               >
-                <span className="flex-shrink-0">
+                <span className="shrink-0">
                   {item.icon}
                 </span>
                 {isOpen && <span className="text-sm font-medium">{item.name}</span>}

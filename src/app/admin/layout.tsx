@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useSidebar } from "@/context/SidebarContext";
-import AppHeader from "@/components/header";
+import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/components/sidebar"; 
 import Backdrop from "@/layout/Backdrop";
 
@@ -19,7 +19,7 @@ export default function PetugasLayout({ children }: { children: React.ReactNode 
   return (
     <div className="min-h-screen xl:flex">
       {/* Sidebar & Backdrop */}
-      <AppSidebar userRole="admin" /> {/* role guru */}
+      <AppSidebar userRole="admin" /> 
       <Backdrop />
 
       {/* Main Content */}

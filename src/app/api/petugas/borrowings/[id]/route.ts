@@ -11,21 +11,44 @@ export async function PUT(
 
   const db = await getConnection();
 
-  // Ambil detail buku yang dipinjam
-  const [details]: any = await db.query(
-    `SELECT * FROM borrowing_details WHERE borrowing_id = ?`,
-    [id]
-  );
-
-  if (!details.length) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
-  }
-
   try {
     await db.query("START TRANSACTION");
 
-    // 1️⃣ APPROVE — kurangi stok
+    // Ambil data borrowing
+    const [[borrowing]]: any = await db.query(
+      `SELECT * FROM borrowings WHERE id = ?`,
+      [id]
+    );
+
+    if (!borrowing) {
+      await db.query("ROLLBACK");
+      return NextResponse.json({ error: "Borrowing not found" }, { status: 404 });
+    }
+
+    // Ambil detail buku
+    const [details]: any = await db.query(
+      `SELECT * FROM borrowing_details WHERE borrowing_id = ?`,
+      [id]
+    );
+
+    if (!details.length) {
+      await db.query("ROLLBACK");
+      return NextResponse.json({ error: "Details not found" }, { status: 404 });
+    }
+
+    // ============================
+    //         ACTION: APPROVE
+    // ============================
     if (action === "approve") {
+      // Cegah approve dua kali
+      if (borrowing.status === "disetujui") {
+        await db.query("ROLLBACK");
+        return NextResponse.json(
+          { error: "Sudah disetujui sebelumnya" },
+          { status: 400 }
+        );
+      }
+
       await db.query(
         `UPDATE borrowings
          SET status='disetujui', confirmation_date=NOW()
@@ -33,9 +56,11 @@ export async function PUT(
         [id]
       );
 
+      // Kurangi stock sesuai quantity
       for (const item of details) {
         await db.query(
-          `UPDATE books SET stock = GREATEST(stock - ?, 0)
+          `UPDATE books
+           SET stock = GREATEST(stock - ?, 0)
            WHERE id = ?`,
           [item.quantity, item.book_id]
         );
@@ -45,10 +70,12 @@ export async function PUT(
       return NextResponse.json({ message: "Disetujui" });
     }
 
-    // 2️⃣ DECLINE
+    // ============================
+    //         ACTION: DECLINE
+    // ============================
     if (action === "decline") {
       await db.query(
-        `UPDATE borrowings
+        `UPDATE borrowings 
          SET status='ditolak', confirmation_date=NOW()
          WHERE id = ?`,
         [id]
@@ -58,10 +85,21 @@ export async function PUT(
       return NextResponse.json({ message: "Ditolak" });
     }
 
-    // 3️⃣ DIPINJAM — petugas mengirim buku
+    // ============================
+    //         ACTION: DIPINJAM
+    // ============================
     if (action === "dipinjam") {
+      // Tidak boleh dipinjam kalau belum approve
+      if (borrowing.status !== "disetujui") {
+        await db.query("ROLLBACK");
+        return NextResponse.json(
+          { error: "Peminjaman hanya dapat diproses setelah disetujui" },
+          { status: 400 }
+        );
+      }
+
       await db.query(
-        `UPDATE borrowings
+        `UPDATE borrowings 
          SET status='dipinjam', confirmation_date=NOW()
          WHERE id = ?`,
         [id]
@@ -71,20 +109,25 @@ export async function PUT(
       return NextResponse.json({ message: "Peminjaman diproses" });
     }
 
-    // ❌ RETURN DIPINDAHKAN!
+    // ============================
+    //     ACTION RETURN → BLOCK
+    // ============================
     if (action === "return") {
       await db.query("ROLLBACK");
       return NextResponse.json(
-        { error: "Gunakan endpoint /api/petugas/return/[id] untuk pengembalian" },
+        { error: "Gunakan endpoint return/[id] untuk pengembalian" },
         { status: 400 }
       );
     }
 
+    // ============================
+    //      INVALID ACTION
+    // ============================
     await db.query("ROLLBACK");
     return NextResponse.json({ error: "Aksi tidak valid" }, { status: 400 });
   } catch (err) {
     await db.query("ROLLBACK");
-    console.log("BORROWINGS PUT ERROR:", err);
+    console.error("BORROWINGS PUT ERROR:", err);
     return NextResponse.json(
       { error: "Gagal memproses aksi" },
       { status: 500 }

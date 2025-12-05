@@ -6,7 +6,9 @@ import Link from "next/link";
 export default function BooksManagement() {
   const [books, setBooks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
+  // Fetch daftar buku
   const fetchBooks = async () => {
     try {
       const res = await fetch("/api/buku");
@@ -17,14 +19,24 @@ export default function BooksManagement() {
     }
   };
 
+  // Hapus buku
   const deleteBook = async (id: number) => {
-    if (!confirm("Yakin ingin menghapus buku?")) return;
+    if (!confirm("Yakin ingin menghapus buku ini?")) return;
 
-    await fetch(`/api/buku/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      setDeletingId(id);
+      const res = await fetch(`/api/buku/${id}`, { method: "DELETE" });
 
-    fetchBooks();
+      if (!res.ok) throw new Error("Gagal menghapus buku");
+
+      await fetchBooks(); // Refresh daftar buku
+      alert("Buku berhasil dihapus");
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menghapus buku.");
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   useEffect(() => {
@@ -89,9 +101,14 @@ export default function BooksManagement() {
 
                 <button
                   onClick={() => deleteBook(book.id)}
-                  className="flex-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
+                  disabled={deletingId === book.id}
+                  className={`flex-1 px-3 py-1 text-white text-sm rounded-md ${
+                    deletingId === book.id
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-700"
+                  }`}
                 >
-                  Hapus
+                  {deletingId === book.id ? "Menghapus..." : "Hapus"}
                 </button>
               </div>
             </div>
