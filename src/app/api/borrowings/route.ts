@@ -15,7 +15,7 @@ export async function GET(req: Request) {
   try {
     const db = await getConnection();
 
-    // 1️⃣ AUTO UPDATE STATUS TERLAMBAT
+    // auto update status terlambat
     await db.query(
       `
       UPDATE borrowings
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
       [userId]
     );
 
-    // 2️⃣ AMBIL DATA SETELAH UPDATE
+    // ambil data peminjaman beserta detail bukunya
     const [rows]: any = await db.query(
       `
       SELECT 
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
       [userId]
     );
 
-    // 3️⃣ GROUPING PER PEMINJAMAN
+    // strukturkan data
     const borrowingsMap: Record<number, any> = {};
 
     rows.forEach((row: any) => {

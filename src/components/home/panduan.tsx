@@ -23,7 +23,7 @@ export default function PanduanPeminjaman() {
   const [lateDays, setLateDays] = useState(0);
 
   const lateFeePerDay = 1000;
-  const calcFee = (days) => Math.max(0, days) * lateFeePerDay;
+  const calcFee = (days : any) => Math.max(0, days) * lateFeePerDay;
 
   return (
     <main className="min-h-screen bg-white">
@@ -100,7 +100,7 @@ export default function PanduanPeminjaman() {
   );
 }
 
-/* --- COMPONENTS --- */
+
 
 function Header() {
   return (
@@ -126,7 +126,7 @@ function Header() {
   );
 }
 
-function InfoCard({ icon, label, value }) {
+function InfoCard({ icon , label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-5 shadow hover:shadow-lg transition">
       <div className="flex items-center gap-3 mb-2">
@@ -140,7 +140,7 @@ function InfoCard({ icon, label, value }) {
   );
 }
 
-function Section({ title, number, children }) {
+function Section({ title, number, children } : { title: string; number: string; children: React.ReactNode }) {
   return (
     <section className="bg-white border border-gray-200 rounded-lg p-8 mb-6 shadow-sm">
       <div className="flex items-center gap-3 mb-6">
@@ -154,7 +154,7 @@ function Section({ title, number, children }) {
   );
 }
 
-function ListItem({ text }) {
+function ListItem({ text }: { text: string }) {
   return (
     <li className="flex items-start gap-3">
       <CheckCircle2 className="w-5 h-5 text-[#281A14]" />
@@ -163,7 +163,7 @@ function ListItem({ text }) {
   );
 }
 
-function Steps({ steps }) {
+function Steps({ steps }  : { steps: string[] }) {
   return (
     <div className="space-y-3">
       {steps.map((text, i) => (
@@ -173,7 +173,7 @@ function Steps({ steps }) {
   );
 }
 
-function Step({ number, text }) {
+function Step({ number, text }  : { number: number; text: string }) {
   return (
     <div className="flex items-start gap-4 p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm hover:shadow-lg transition">
       <div className="w-8 h-8 bg-[#281A14] text-white rounded-lg flex items-center justify-center font-semibold text-sm shadow">
@@ -191,7 +191,7 @@ function OperationalAndIdentity() {
       <div>
         <h3 className="font-semibold text-[#281A14] mb-4">Jadwal Perpustakaan</h3>
         <div className="space-y-2 text-sm">
-          <InfoRow label="Hari Operasional" value="Senin – Sabtu" />
+          <InfoRow  label ="Hari Operasional" value="Senin – Sabtu" />
           <InfoRow label="Jam Buka" value="07:00 – 15:00" />
           <InfoRow label="Istirahat Petugas" value="11:30 – 13:00" />
           <InfoRow label="Hari Minggu" value="Libur" badge />
@@ -218,7 +218,7 @@ function OperationalAndIdentity() {
   );
 }
 
-function InfoRow({ label, value, badge }) {
+function InfoRow({ label, value, badge } : { label: string; value: string; badge?: boolean }) {
   return (
     <div className="flex justify-between items-center py-2">
       <span className="text-[#281A14] opacity-70">{label}</span>
@@ -234,7 +234,7 @@ function InfoRow({ label, value, badge }) {
   );
 }
 
-function InfoBubble({ text }) {
+function InfoBubble({ text } : { text: string }) {
   return (
     <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900">
       {text}
@@ -242,7 +242,7 @@ function InfoBubble({ text }) {
   );
 }
 
-function CheckItem({ text }) {
+function CheckItem({ text } : { text: string }) {
   return (
     <div className="flex items-center gap-3">
       <div className="w-6 h-6 bg-[#281A14] text-white rounded flex items-center justify-center shadow">
@@ -253,7 +253,7 @@ function CheckItem({ text }) {
   );
 }
 
-function LoanAndFine({ lateDays, setLateDays, calcFee }) {
+function LoanAndFine({ lateDays, setLateDays, calcFee } : { lateDays: number; setLateDays: (days: number) => void; calcFee: (days: number) => number }) {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
@@ -277,7 +277,7 @@ function LoanAndFine({ lateDays, setLateDays, calcFee }) {
   );
 }
 
-function StatBox({ label, value }) {
+function StatBox({ label, value } : { label: string; value: string }) {
   return (
     <div className="bg-slate-50 border border-slate-200 rounded-lg p-5 shadow-sm">
       <p className="text-sm text-[#281A14] opacity-70 mb-2">{label}</p>
@@ -286,7 +286,7 @@ function StatBox({ label, value }) {
   );
 }
 
-function Alert({ type, text }) {
+function Alert({ type, text }   : { type: "info" | "warning"; text: string }) {
   const styles = {
     info: "bg-blue-50 border-blue-200 text-blue-800",
     warning: "bg-amber-50 border-amber-200 text-amber-800",
@@ -307,7 +307,7 @@ function Alert({ type, text }) {
   );
 }
 
-function FineCalculator({ lateDays, setLateDays, calcFee }) {
+function FineCalculator({ lateDays, setLateDays, calcFee }  : { lateDays: number; setLateDays: (days: number) => void; calcFee: (days: number) => number }) {
   return (
     <div className="bg-slate-50 border border-slate-200 rounded-lg p-6">
       <h4 className="font-semibold text-[#281A14] mb-4">Kalkulator Denda</h4>
@@ -336,7 +336,7 @@ function FineCalculator({ lateDays, setLateDays, calcFee }) {
   );
 }
 
-function ReturnSteps({ steps }) {
+function ReturnSteps({ steps }  : { steps: string[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
       {steps.map((text, i) => (
@@ -346,7 +346,7 @@ function ReturnSteps({ steps }) {
   );
 }
 
-function ReturnStep({ number, text }) {
+function ReturnStep({ number, text }  : { number: number; text: string }) {
   return (
     <div className="flex items-start gap-3 p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm hover:shadow-lg transition">
       <div className="w-7 h-7 bg-[#281A14] text-white rounded flex items-center justify-center font-semibold text-sm shadow">
@@ -374,7 +374,7 @@ function Tips() {
   );
 }
 
-function TipItem({ icon, text }) {
+function TipItem({ icon, text } : { icon: React.ReactNode; text: string }) {
   return (
     <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-lg shadow-sm hover:shadow-lg transition">
       <span className="text-[#281A14]">{icon}</span>

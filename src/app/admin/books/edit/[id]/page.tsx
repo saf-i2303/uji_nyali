@@ -12,13 +12,14 @@ export default function EditBook() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
-  // Ambil data buku
+  // Fetch data buku
   useEffect(() => {
     const fetchBook = async () => {
       try {
         const res = await fetch(`/api/buku/${id}`, { cache: "no-store" });
         if (!res.ok) throw new Error("Gagal mengambil data buku");
         const data = await res.json();
+
         setBook(data.data ?? data);
       } catch (err) {
         console.error(err);
@@ -31,19 +32,22 @@ export default function EditBook() {
     fetchBook();
   }, [id]);
 
-  const handleSubmit = async (data: any) => {
+  // Submit
+  const handleSubmit = async (formData: any) => {
     setSubmitting(true);
     try {
+      const updatedData = { ...book, ...formData };
+
       const res = await fetch(`/api/buku/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(updatedData),
       });
 
       if (!res.ok) throw new Error("Gagal memperbarui buku");
 
       alert("Buku berhasil diperbarui!");
-      router.push("/admin/books"); // Bisa diganti ke detail jika mau
+      router.push("/admin/books");
     } catch (err) {
       console.error(err);
       alert("Terjadi kesalahan saat menyimpan buku");
@@ -58,7 +62,11 @@ export default function EditBook() {
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-6">Edit Buku</h1>
-      <BookForm initialData={book} onSubmit={handleSubmit} disabled={submitting} />
+      <BookForm
+        initialData={book}
+        onSubmit={handleSubmit}
+        disabled={submitting}
+      />
     </div>
   );
 }

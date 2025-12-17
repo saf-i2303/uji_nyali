@@ -7,9 +7,10 @@ import "react-datepicker/dist/react-datepicker.css";
 interface BookFormProps {
   initialData?: any;
   onSubmit: (data: any) => Promise<void> | void;
+  disabled?: boolean;
 }
 
-export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) {
+export default function BookForm({ initialData = {}, onSubmit, disabled = false }: BookFormProps) {
   const initialBook = {
     title: "",
     author: "",
@@ -24,17 +25,20 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
     stock: "",
     location_code: "",
     condition_book: "",
-    createdat: new Date(),
     ...initialData,
-    createdat: initialData?.createdat ? new Date(initialData.createdat) : new Date(),
+    createdat: initialData?.createdat
+      ? new Date(initialData.createdat)
+      : new Date(),
   };
 
   const [book, setBook] = useState(initialBook);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setBook((prev) => ({ ...prev, [name]: value }));
+    setBook((prev: any) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +62,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+    <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 opacity-100">
       {/* TITLE */}
       <input
         type="text"
@@ -67,6 +71,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Judul Buku"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
         required
       />
 
@@ -78,6 +83,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Penulis"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
         required
       />
 
@@ -89,6 +95,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Penerbit"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* YEAR */}
@@ -99,6 +106,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Tahun Terbit"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* ISBN */}
@@ -109,6 +117,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="ISBN"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* CATEGORY */}
@@ -117,6 +126,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         value={book.category}
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       >
         <option value="">Pilih Kategori</option>
         <option value="Fiksi Indonesia">Fiksi Indonesia</option>
@@ -124,7 +134,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         <option value="Buku Pelajaran">Buku Pelajaran</option>
       </select>
 
-      {/* IMAGE + PREVIEW */}
+      {/* IMAGE */}
       <div className="col-span-2 space-y-2">
         <input
           type="text"
@@ -133,12 +143,13 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
           placeholder="URL Gambar"
           className="border p-2 rounded w-full"
           onChange={handleChange}
+          disabled={disabled}
         />
         {book.image && (
           <img
             src={book.image}
             alt="Preview Cover"
-            className="w-40 h-56 object-cover border rounded shadow"
+            className={`w-40 h-56 object-cover border rounded shadow`}
           />
         )}
       </div>
@@ -150,6 +161,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Deskripsi"
         className="border p-2 rounded col-span-2 h-28"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* PAGES */}
@@ -160,6 +172,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Jumlah Halaman"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* LANGUAGE */}
@@ -168,6 +181,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         value={book.language}
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       >
         <option value="">Pilih Bahasa</option>
         <option value="Indonesia">Indonesia</option>
@@ -182,6 +196,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Stok"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* LOCATION CODE */}
@@ -192,6 +207,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         placeholder="Kode Rak Buku"
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       />
 
       {/* CONDITION */}
@@ -200,6 +216,7 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
         value={book.condition_book}
         className="border p-2 rounded"
         onChange={handleChange}
+        disabled={disabled}
       >
         <option value="">Kondisi Buku</option>
         <option value="Baik">Baik</option>
@@ -214,15 +231,16 @@ export default function BookForm({ initialData = {}, onSubmit }: BookFormProps) 
           onChange={(date: any) => setBook({ ...book, createdat: date })}
           dateFormat="yyyy-MM-dd"
           className="border p-2 rounded w-full"
+          disabled={disabled}
         />
       </div>
 
       {/* SUBMIT */}
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || disabled}
         className={`col-span-2 px-4 py-2 rounded-md text-white ${
-          loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
+          loading || disabled ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"
         }`}
       >
         {loading ? "Menyimpan..." : "Simpan"}

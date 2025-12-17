@@ -56,7 +56,7 @@ export default function CategoryFilter({
           >
             <div className="max-h-80 overflow-y-auto py-1">
               
-              {/* Semua Kategori */}
+              
               <button
                 onClick={() => handleCategoryClick("Semua Kategori")}
                 className={`w-full px-4 py-2.5 text-left text-sm transition-colors ${
@@ -70,7 +70,7 @@ export default function CategoryFilter({
 
               <div className="h-px bg-gray-200 my-1" />
 
-              {/* Kategori Lain */}
+              
               {categories.map((cat) => (
                 <button
                   key={cat}

@@ -5,9 +5,8 @@ export async function GET() {
   try {
     const db = await getConnection();
 
-    // -----------------------------
+    
     // Ambil peminjaman yang statusnya "dipinjam"
-    // -----------------------------
     const [borrowings]: any = await db.query(`
       SELECT 
         b.id,
@@ -27,9 +26,7 @@ export async function GET() {
       return NextResponse.json([]);
     }
 
-    // -----------------------------
     // Ambil detail buku
-    // -----------------------------
     const [details]: any = await db.query(`
       SELECT 
         bd.borrowing_id,
@@ -42,9 +39,7 @@ export async function GET() {
       LEFT JOIN books ON books.id = bd.book_id
     `);
 
-    // -----------------------------
     // Gabungkan data
-    // -----------------------------
     const result = borrowings.map((b: any) => ({
       ...b,
       books: details
@@ -68,9 +63,9 @@ export async function GET() {
   }
 }
 
-// -------------------------------------------------------
-// POST → tandai pengembalian & hitung denda otomatis
-// -------------------------------------------------------
+
+// tandain pengembalian & hitung denda otomatis
+
 export async function POST(req: Request) {
   try {
     const { id } = await req.json(); // borrowing_id
@@ -92,7 +87,7 @@ export async function POST(req: Request) {
     const today = new Date();
     const due = new Date(borrowing.due_date);
 
-    // Hitung denda
+  
     let fine = 0;
     if (today > due) {
       const diffTime = today.getTime() - due.getTime();
@@ -100,10 +95,10 @@ export async function POST(req: Request) {
       fine = diffDays * 1000; // 1000 per hari
     }
 
-    // Mulai transaksi
+   
     await db.query("START TRANSACTION");
 
-    // Kembalikan stok
+
     const [details]: any = await db.query(
       `SELECT * FROM borrowing_details WHERE borrowing_id = ?`,
       [id]
@@ -116,7 +111,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Update borrowings
+  
     await db.query(
       `UPDATE borrowings 
        SET status = 'dikembalikan',

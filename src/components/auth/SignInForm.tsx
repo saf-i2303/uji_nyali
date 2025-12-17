@@ -52,7 +52,7 @@ export default function SignInForm() {
     <div className="min-h-screen w-full flex items-center justify-center bg-linear-to-br from-[#F5EDE4] via-[#FAF5F0] to-[#E8D5C4] p-4">
       <div className="w-full max-w-5xl bg-white shadow-2xl rounded-3xl overflow-hidden flex flex-col lg:flex-row">
 
-        {/* ============= LEFT FORM SECTION ============= */}
+        
         <div className="flex flex-col flex-1 p-8 lg:p-14">
 
           {/* Back Button */}
@@ -74,7 +74,7 @@ export default function SignInForm() {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Error Message */}
+             
               {errorMsg && (
                 <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm">
                   {errorMsg}
@@ -133,7 +133,7 @@ export default function SignInForm() {
           </div>
         </div>
 
-        {/* ============= RIGHT IMAGE SECTION ============= */}
+        
         <div className="hidden lg:flex justify-center items-center w-1/2 bg-[#F8F3ED] p-10">
           <Image
             src="/images/picture/Library-amico.png"

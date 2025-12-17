@@ -36,9 +36,6 @@ export async function PUT(
       return NextResponse.json({ error: "Details not found" }, { status: 404 });
     }
 
-    // ============================
-    //         ACTION: APPROVE
-    // ============================
     if (action === "approve") {
       // Cegah approve dua kali
       if (borrowing.status === "disetujui") {
@@ -70,9 +67,6 @@ export async function PUT(
       return NextResponse.json({ message: "Disetujui" });
     }
 
-    // ============================
-    //         ACTION: DECLINE
-    // ============================
     if (action === "decline") {
       await db.query(
         `UPDATE borrowings 
@@ -85,9 +79,7 @@ export async function PUT(
       return NextResponse.json({ message: "Ditolak" });
     }
 
-    // ============================
-    //         ACTION: DIPINJAM
-    // ============================
+
     if (action === "dipinjam") {
       // Tidak boleh dipinjam kalau belum approve
       if (borrowing.status !== "disetujui") {
@@ -109,9 +101,6 @@ export async function PUT(
       return NextResponse.json({ message: "Peminjaman diproses" });
     }
 
-    // ============================
-    //     ACTION RETURN → BLOCK
-    // ============================
     if (action === "return") {
       await db.query("ROLLBACK");
       return NextResponse.json(
@@ -120,9 +109,7 @@ export async function PUT(
       );
     }
 
-    // ============================
-    //      INVALID ACTION
-    // ============================
+
     await db.query("ROLLBACK");
     return NextResponse.json({ error: "Aksi tidak valid" }, { status: 400 });
   } catch (err) {

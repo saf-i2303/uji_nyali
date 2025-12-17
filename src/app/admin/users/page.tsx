@@ -10,7 +10,7 @@ export default function AdminUserManagement() {
   const [openAddModal, setOpenAddModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);
 
-  // Form tambah user
+ 
   const [form, setForm] = useState({
     name: "",
     password: "",
@@ -21,7 +21,7 @@ export default function AdminUserManagement() {
     admin_id: "",
   });
 
-  // Form edit user
+  
   const [editForm, setEditForm] = useState<any>({});
 
   // Load users
@@ -33,7 +33,7 @@ export default function AdminUserManagement() {
     setLoading(false);
   };
 
-  // Delete — Admin tidak bisa dihapus
+  // Delete
   const deleteUser = async (user: any) => {
     if (user.role === "admin")
       return alert("User admin tidak bisa dihapus!");
@@ -68,13 +68,13 @@ export default function AdminUserManagement() {
     }
   };
 
-  // Open edit modal
+  
   const openEdit = (user: any) => {
     setEditForm(user);
     setOpenEditModal(true);
   };
 
-  // Save edit
+
   const saveEdit = async () => {
     const res = await fetch(`/api/users/${editForm.id}`, {
       method: "PUT",
@@ -93,12 +93,12 @@ export default function AdminUserManagement() {
     loadUsers();
   }, []);
 
-  // Pisah per role
+
   const admins = users.filter((u) => u.role === "admin");
   const gurus = users.filter((u) => u.role === "guru");
   const siswa = users.filter((u) => u.role === "siswa");
 
-  // Style warna per role
+ 
   const roleColor = {
     admin: "bg-yellow-50",
     guru: "bg-blue-50",
@@ -117,7 +117,7 @@ export default function AdminUserManagement() {
         <Plus size={20} /> Tambah Data User
       </button>
 
-      {/* -------------- TABEL ADMIN -------------- */}
+    
       <h2 className="text-xl font-semibold mb-2 text-yellow-700">
         Daftar Admin
       </h2>
@@ -130,7 +130,7 @@ export default function AdminUserManagement() {
         canDelete={false}
       />
 
-      {/* -------------- TABEL GURU -------------- */}
+      
       <h2 className="text-xl font-semibold mt-8 mb-2 text-blue-700">
         Daftar petugas
       </h2>
@@ -143,7 +143,7 @@ export default function AdminUserManagement() {
         canDelete={true}
       />
 
-      {/* -------------- TABEL SISWA -------------- */}
+    
       <h2 className="text-xl font-semibold mt-8 mb-2 text-green-700">
         daftar siswa
       </h2>
@@ -156,7 +156,7 @@ export default function AdminUserManagement() {
         canDelete={true}
       />
 
-      {/* MODAL TAMBAH USER */}
+      
       {openAddModal && (
         <Modal title="Tambah User" onClose={() => setOpenAddModal(false)}>
           <UserForm form={form} setForm={setForm} />
@@ -178,7 +178,7 @@ export default function AdminUserManagement() {
         </Modal>
       )}
 
-      {/* MODAL EDIT USER */}
+     
       {openEditModal && (
         <Modal title="Edit User" onClose={() => setOpenEditModal(false)}>
           <UserForm form={editForm} setForm={setEditForm} isEdit />
@@ -203,9 +203,7 @@ export default function AdminUserManagement() {
   );
 }
 
-/* ============================
-   COMPONENT: TABLE USER
-============================= */
+
 function UserTable({
   data,
   color,
@@ -282,9 +280,7 @@ function UserTable({
   );
 }
 
-/* ============================
-   COMPONENT: MODAL
-============================= */
+
 function Modal({ title, children, onClose }: any) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -296,9 +292,7 @@ function Modal({ title, children, onClose }: any) {
   );
 }
 
-/* ============================
-   COMPONENT: FORM USER
-============================= */
+
 function UserForm({ form, setForm, isEdit = false }: any) {
   return (
     <div className="space-y-3">

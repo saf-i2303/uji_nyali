@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
-// Dynamic import ReactApexChart
 const ReactApexChart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 interface MonthData {

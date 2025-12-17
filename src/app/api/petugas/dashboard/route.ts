@@ -28,10 +28,10 @@ export async function GET() {
     const [users]: any = await db.query(`SELECT id FROM users`);
     const totalUsers = users.length;
 
-    // -----------------------------
+    
     // Data bulanan untuk chart
-    // -----------------------------
-    // 1. Peminjaman per bulan
+   
+    //  Peminjaman per bulan
     const [borrowingsPerMonth]: any = await db.query(`
       SELECT MONTH(borrow_date) AS month, COUNT(*) AS total
       FROM borrowings
@@ -39,7 +39,7 @@ export async function GET() {
       GROUP BY MONTH(borrow_date)
     `);
 
-    // 2. Pengembalian per bulan
+    // Pengembalian per bulan
     const [returnsPerMonth]: any = await db.query(`
       SELECT MONTH(return_date) AS month, COUNT(*) AS total
       FROM borrowings

@@ -2,16 +2,10 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import {
-  Calendar,
-  Clock,
-  X,
-  Image as ImageIcon,
+import { Calendar,Clock,X,Image as ImageIcon,
 } from "lucide-react";
 
-/* ============================
-   Types
-===============================*/
+
 type Book = {
   id: number;
   title: string;
@@ -34,9 +28,7 @@ type Borrowing = {
   books: Book[];
 };
 
-/* ============================
-   Helpers & Constants
-===============================*/
+
 const MONTHS = [
   "Jan",
   "Feb",
@@ -98,9 +90,7 @@ const STATUS_CATEGORIES = [
   { id: "ditolak", label: "Ditolak" },
 ];
 
-/* ============================
-   Main Component
-===============================*/
+
 export default function RiwayatPeminjamanPage() {
   const { data: session } = useSession();
   const [borrowings, setBorrowings] = useState<Borrowing[]>([]);
@@ -108,9 +98,7 @@ export default function RiwayatPeminjamanPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeFilter, setActiveFilter] = useState("semua");
 
-  /* ============================
-     Fetch Borrowings
-  ===============================*/
+
   useEffect(() => {
     if (!session?.user?.id) return;
 
@@ -137,9 +125,7 @@ export default function RiwayatPeminjamanPage() {
     fetchBorrowings();
   }, [session?.user?.id]);
 
-  /* ============================
-     Cancel Borrowing
-  ===============================*/
+
   const handleCancel = async (id: number) => {
     if (!confirm("Yakin ingin membatalkan peminjaman ini?")) return;
     try {
@@ -151,9 +137,7 @@ export default function RiwayatPeminjamanPage() {
     }
   };
 
-  /* ============================
-     Filtering (Memoized)
-  ===============================*/
+
   const filteredBorrowings = useMemo(() => {
     if (activeFilter === "semua") return borrowings;
 
@@ -175,9 +159,7 @@ export default function RiwayatPeminjamanPage() {
     return borrowings.filter((b) => b.status === id).length;
   };
 
-  /* ============================
-     If Not Logged In
-  ===============================*/
+
   if (!session?.user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-8">
@@ -196,9 +178,7 @@ export default function RiwayatPeminjamanPage() {
     );
   }
 
-  /* ============================
-     MAIN UI
-  ===============================*/
+
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-50 p-6 md:p-10">
       <div className="max-w-6xl mx-auto">

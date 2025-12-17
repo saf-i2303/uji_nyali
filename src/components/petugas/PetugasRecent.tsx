@@ -22,7 +22,7 @@ export default function PetugasRecent() {
   useEffect(() => {
     async function fetchRecent() {
       try {
-        const res = await fetch("/api/petugas/borrowings"); // endpoint peminjaman terbaru
+        const res = await fetch("/api/petugas/borrowings"); // endpoint peminjaman yang baru
         const data = await res.json();
 
         // Ambil 10 terakhir dan map ke format tabel
@@ -78,7 +78,7 @@ export default function PetugasRecent() {
         <TableBody>
           {recent.length === 0 ? (
             <TableRow>
-              <TableCell className="p-3 text-center" colSpan={3}>
+              <TableCell className="p-3 text-center" colSpan={3} >
                 Tidak ada data peminjaman terbaru
               </TableCell>
             </TableRow>

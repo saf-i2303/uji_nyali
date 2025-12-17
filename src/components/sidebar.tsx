@@ -16,10 +16,10 @@ import {
   Settings 
 } from "lucide-react";
 
-// Role type
+
 type Role = "admin" | "guru" | "siswa";
 
-// Nav item type
+
 type NavItem = {
   name: string;
   icon: React.ReactNode;
@@ -27,7 +27,7 @@ type NavItem = {
   access?: Role[];
 };
 
-// ======== MENU LIST ========
+
 const mainMenu: NavItem[] = [
   { 
     name: "Dashboard Admin", 
@@ -95,7 +95,7 @@ const otherMenu: NavItem[] = [
  
 ];
 
-// ======== SIDEBAR COMPONENT ========
+
 export default function AppSidebar({ userRole }: { userRole: Role }) {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
@@ -167,7 +167,7 @@ export default function AppSidebar({ userRole }: { userRole: Role }) {
   );
 }
 
-// ======== SUB COMPONENT ========
+
 function MenuSection({
   userRole,
   title,

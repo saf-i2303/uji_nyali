@@ -176,7 +176,6 @@ export default function ManajemenPeminjaman() {
 
                   {/* AKSI */}
                   <td className="p-3">
-                    {/* MENUNGGU KONFIRMASI */}
                     {item.status === "menunggu konfirmasi" && (
                       <div className="flex gap-2">
                         <button
@@ -204,12 +203,12 @@ export default function ManajemenPeminjaman() {
                       </button>
                     )}
 
-                    {/* DIPINJAM → TIDAK ADA AKSI */}
+                  
                     {item.status === "dipinjam" && (
                       <span className="text-gray-600 text-sm">Dipinjam</span>
                     )}
 
-                    {/* DIKEMBALIKAN / DITOLAK → SELESAI */}
+                   
                     {(item.status === "dikembalikan" ||
                       item.status === "ditolak" ||
                       item.status === "terlambat") && (

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-// GET → Ambil 1 user berdasarkan id
+//  Ambil 1 user berdasarkan id
 export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -23,7 +23,7 @@ export async function GET(
   }
 }
 
-// PUT → Update data user
+//  Update data user
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -51,7 +51,7 @@ export async function PUT(
   }
 }
 
-// DELETE → Hapus user
+//  Hapus user
 export async function DELETE(
   req: Request,
   context: { params: Promise<{ id: string }> }

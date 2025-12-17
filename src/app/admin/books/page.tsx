@@ -29,7 +29,7 @@ export default function BooksManagement() {
 
       if (!res.ok) throw new Error("Gagal menghapus buku");
 
-      await fetchBooks(); // Refresh daftar buku
+      await fetchBooks(); 
       alert("Buku berhasil dihapus");
     } catch (err) {
       console.error(err);

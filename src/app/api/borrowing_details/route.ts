@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-// =======================
-// CREATE borrowing_detail
-// =======================
+
 export async function POST(req: Request) {
   try {
     const { borrowing_id, book_id, quantity } = await req.json();
@@ -40,9 +38,7 @@ export async function POST(req: Request) {
   }
 }
 
-// =======================
-// GET ALL borrowing_details BY user_id
-// =======================
+
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);

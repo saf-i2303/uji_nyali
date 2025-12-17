@@ -5,19 +5,18 @@ import { useSession } from "next-auth/react";
 
 import { useSidebar } from "@/context/SidebarContext";
 import AppSidebar from "@/components/sidebar";
-import AppHeader from "@/layout/AppHeader";
+import AppHeader from "@/components/header/AppHeader";
 import Backdrop from "@/layout/Backdrop";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const { data: session } = useSession();
-  const user = session?.user;
+  const user = session?.user || null;
 
-  // Tentukan role user, default "siswa" jika session kosong
-  const userRole = (user?.role as "admin" | "guru" | "siswa") || "siswa";
+  const userRole =
+    (user?.role as "admin" | "guru" | "siswa") || "siswa";
 
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
 
-  // Margin konten menyesuaikan sidebar
   const mainContentMargin = isMobileOpen
     ? "ml-0"
     : isExpanded || isHovered
@@ -26,14 +25,21 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <div className="min-h-screen xl:flex">
-      {/* Sidebar & Backdrop */}
+      {/* Sidebar */}
       <AppSidebar userRole={userRole} />
+
+      {/* Backdrop for mobile */}
       <Backdrop />
 
       {/* Main content */}
-      <div className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}>
-        <AppHeader />
-        <main className="p-4 md:p-6 max-w-7xl mx-auto">{children}</main>
+      <div
+        className={`flex-1 transition-all duration-300 ease-in-out ${mainContentMargin}`}
+      >
+        <AppHeader user={user} />
+
+        <main className="p-4 md:p-6 w-full">
+          {children}
+        </main>
       </div>
     </div>
   );

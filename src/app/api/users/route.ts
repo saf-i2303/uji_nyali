@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-// GET → ambil semua user
+//  ambil semua user
 export async function GET() {
   try {
     const db = await getConnection();
@@ -14,7 +14,7 @@ export async function GET() {
   }
 }
 
-// POST → tambah user baru
+//  tambah user baru
 export async function POST(req: Request) {
   try {
     const body = await req.json();

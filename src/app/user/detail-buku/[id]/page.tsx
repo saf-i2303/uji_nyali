@@ -28,7 +28,6 @@ export default async function DetailPage(props: { params: Promise<{ id: string }
   const book = rows[0];
   const { title, author, publisher, year, pages, language, location_code, stock, category, description, image, condition_book } = book;
 
-  // Get recommended books from same category
   const [recRows]: any = await db.query(
     "SELECT id, title, author, category, image FROM books WHERE category = ? AND id != ? LIMIT 4",
     [category, id]
@@ -45,7 +44,7 @@ export default async function DetailPage(props: { params: Promise<{ id: string }
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-12">
         <div className="flex flex-col md:flex-row gap-8 p-6 md:p-10">
           {/* Book Image */}
-          <div className="relative w-full md:w-[320px] h-[460px] rounded-xl overflow-hidden shadow-xl bg-gray-100 flex-shrink-0">
+          <div className="relative w-full md:w-[320px] h-[460px] rounded-xl overflow-hidden shadow-xl bg-gray-100 -shrink-0">
             <Image 
               src={image || "/placeholder.png"} 
               alt={title} 
@@ -130,7 +129,7 @@ export default async function DetailPage(props: { params: Promise<{ id: string }
               <p className="text-gray-700 leading-relaxed">{description}</p>
             </div>
 
-            {/* Action Buttons */}
+           
             <div className="flex flex-col sm:flex-row gap-4 mt-4">
               {userId ? (
                 <Link
@@ -150,7 +149,6 @@ export default async function DetailPage(props: { params: Promise<{ id: string }
         </div>
       </div>
 
-      {/* Recommended Books */}
       {recRows.length > 0 && (
         <div className="mt-12">
           <h2 className="text-2xl font-bold text-[#281A14] mb-6">Rekomendasi Buku Lainnya</h2>

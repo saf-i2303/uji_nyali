@@ -10,12 +10,12 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // ---------- PUBLIC PAGES ----------
+  //public pages
   const publicPages = ["/", "/login"];
 
   const isPublic = publicPages.includes(pathname);
 
-  // ---------- DEBUG LOG ----------
+  // debug log
   if (
     process.env.NODE_ENV === "development" &&
     !pathname.startsWith("/_next") &&
@@ -25,24 +25,24 @@ export async function middleware(request: NextRequest) {
     console.log("TOKEN:", token);
   }
 
-  // ---------- 1) Sudah login tapi buka PUBLIC page ----------
+ 
   if (token && isPublic) {
     const redirectPath = getHomeByRole(token.role);
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
 
-  // ---------- PROTECTED ROUTES ----------
+
   const isProtected =
     pathname.startsWith("/admin") ||
     pathname.startsWith("/petugas") ||
     pathname.startsWith("/user");
 
-  // ---------- 2) Belum login, tapi akses protected ----------
+
   if (!token && isProtected) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // ---------- 3) Sudah login tapi role tidak cocok ----------
+ 
   if (token && isProtected) {
     const allowed = getHomeByRole(token.role);
 

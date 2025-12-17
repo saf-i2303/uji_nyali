@@ -8,17 +8,13 @@ import {
   Globe,
 } from "lucide-react";
 
-// -----------------------------
-// Types
-// -----------------------------
+
 type FooterSectionProps = {
   title: string;
   items: string[];
 };
 
-// -----------------------------
-// Data
-// -----------------------------
+
 const footerSections: Record<string, string[]> = {
   koleksi: [
     "Katalog Buku",
@@ -67,9 +63,7 @@ const SocialMediaLinks = () => {
   );
 };
 
-// -----------------------------
-// Footer Section Component
-// -----------------------------
+
 const FooterSection = ({ title, items }: FooterSectionProps) => (
   <div>
     <h3 className="text-lg font-semibold text-white mb-4">{title}</h3>
@@ -86,9 +80,7 @@ const FooterSection = ({ title, items }: FooterSectionProps) => (
   </div>
 );
 
-// -----------------------------
-// Brand Section
-// -----------------------------
+
 const BrandSection = () => (
   <div className="flex flex-col gap-4">
     {/* Logo */}
@@ -123,9 +115,7 @@ const BrandSection = () => (
   </div>
 );
 
-// -----------------------------
-// MAIN FOOTER COMPONENT
-// -----------------------------
+
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
@@ -153,7 +143,7 @@ export default function Footer() {
           />
         </div>
 
-        {/* Copyright */}
+       
         <div className="text-center text-gray-500 mt-16 text-sm border-t border-gray-700 pt-8">
           © {currentYear} Perpusan. Semua hak cipta dilindungi.
         </div>

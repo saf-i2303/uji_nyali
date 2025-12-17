@@ -205,7 +205,7 @@ export default function PeminjamanPage() {
 
               {/* Tanggal Pengembalian */}
               <div className="mb-6">
-                <label className="block font-semibold text-[#281A14] mb-3 flex items-center gap-2">
+                <label className="flex font-semibold text-[#281A14] mb-3  items-center gap-2">
                   <Calendar className="w-5 h-5" />
                   Tanggal Pengembalian
                 </label>

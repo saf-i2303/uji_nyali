@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
 import { getConnection } from "@/lib/db";
 
-// =======================
-// GET /api/borrowings/:id
-// =======================
+
 export async function GET(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -52,9 +50,7 @@ export async function GET(
   }
 }
 
-// =======================
-// PUT /api/borrowings/:id
-// =======================
+
 export async function PUT(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -83,9 +79,7 @@ export async function PUT(
   }
 }
 
-// =======================
-// DELETE /api/borrowings/:id
-// =======================
+
 export async function DELETE(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -96,10 +90,10 @@ export async function DELETE(
 
     const db = await getConnection();
 
-    // Hapus detail peminjaman dulu
+   
     await db.query("DELETE FROM borrowing_details WHERE borrowing_id = ?", [id]);
 
-    // Hapus peminjaman utama
+
     const [result]: any = await db.query("DELETE FROM borrowings WHERE id = ?", [id]);
 
     if (result.affectedRows === 0)

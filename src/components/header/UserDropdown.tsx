@@ -1,90 +1,99 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
-import { signOut, useSession } from "next-auth/react";
+import Swal from "sweetalert2";
+import { signOut } from "next-auth/react";
+import { ChevronDown, User, LogOut } from "lucide-react";
+import Link from "next/link";
 
-const roleImages: Record<string, string> = {
-  admin: "https://i.pinimg.com/736x/6c/aa/5f/6caa5f7c1ac7fdc407d9f0af1a0ede14.jpg",
-  guru: "https://i.pinimg.com/736x/86/ef/b0/86efb04b36c37dc6269ad4fc9dd8e9c7.jpg",
-  user: "https://i.pinimg.com/736x/38/e1/60/38e160c97916144d466c9e0e06a1f92b.jpg",
-};
-
-interface UserDropdownProps {
-  isMobile?: boolean;
+interface UserType {
+  name?: string;
+  email?: string;
+  role?: "admin" | "guru" | "user";
+  image?: string;
 }
 
-export default function UserDropdown({ isMobile }: UserDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const { data: session } = useSession();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+export default function UserDropdown({ user }: { user: UserType }) {
+  const [open, setOpen] = useState(false);
 
-  const user = session?.user as
-    | { name: string; role: "admin" | "guru" | "user"; identifier: string; image?: string }
-    | undefined;
+  // Default images berdasarkan role
+  const roleImages: Record<string, string> = {
+    admin: "https://i.pinimg.com/736x/6c/aa/5f/6caa5f7c1ac7fdc407d9f0af1a0ede14.jpg",
+    guru: "https://i.pinimg.com/736x/86/ef/b0/86efb04b36c37dc6269ad4fc9dd8e9c7.jpg",
+    user: "https://i.pinimg.com/736x/38/e1/60/38e160c97916144d466c9e0e06a1f92b.jpg",
+  };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const fallbackAvatar =
+    roleImages[user?.role || "user"] ??
+    "https://i.pinimg.com/736x/86/ef/b0/86efb04b36c37dc6269ad4fc9dd8e9c7.jpg";
 
-  if (!user) return null;
+  const avatar =
+    user?.image?.trim()
+      ? user.image
+      : fallbackAvatar;
 
-  // Untuk versi mobile tampil lebih simple
-  if (isMobile) {
-    return (
-      <div className="relative w-11 h-11 rounded-full overflow-hidden">
-        <Image
-          src={user.image || roleImages[user.role]}
-          alt={user.name}
-          width={44}
-          height={44}
-          className="object-cover"
-        />
-      </div>
-    );
-  }
+  const toggleDropdown = () => setOpen((prev) => !prev);
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Logout",
+      text: "Apakah kamu yakin ingin keluar?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Ya, Logout",
+      cancelButtonText: "Batal",
+    });
+
+    if (result.isConfirmed) {
+      await signOut({ callbackUrl: "/login" });
+    }
+  };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div className="relative">
+      {/* Profile Button */}
       <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        className="flex items-center gap-3 text-gray-700 dark:text-gray-400"
+        onClick={toggleDropdown}
+        className="flex items-center gap-2 hover:bg-gray-100 px-2 py-1 rounded-full transition"
       >
-        <span className="h-11 w-11 rounded-full overflow-hidden">
-          <Image
-            src={user.image || roleImages[user.role]}
-            alt={user.name}
-            width={44}
-            height={44}
-            className="object-cover"
-          />
-        </span>
-        <span className="font-medium">{user.name}</span>
+        <Image
+          src={avatar}
+          alt="User Avatar"
+          width={40}
+          height={40}
+          className="rounded-full object-cover"
+        />
+        <ChevronDown className="w-4 h-4 text-gray-600" />
       </button>
 
-      {isOpen && (
-        <div className="absolute right-0 mt-2 w-60 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-lg p-3 flex flex-col gap-2 z-50">
-          <span className="block font-medium text-gray-700 dark:text-gray-300">{user.name}</span>
-          <span className="text-gray-500 text-sm">NIPD: {user.identifier}</span>
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-xl border z-50 animate-fadeIn">
+          {/* User Info */}
+          <div className="p-3 border-b">
+            <p className="font-medium">{user?.name || "User"}</p>
+            <p className="text-xs text-gray-500">{user?.email}</p>
+          </div>
 
-          <a
+          {/* Profile */}
+          <Link
             href="/profile"
-            className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
+            className="flex items-center gap-2 px-4 py-2 text-sm hover:bg-gray-100 transition"
           >
-            Account settings
-          </a>
+            <User size={16} />
+            <span>Profile</span>
+          </Link>
 
+          {/* Logout */}
           <button
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-left"
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-xl transition"
           >
-            Sign out
+            <LogOut size={16} />
+            <span>Logout</span>
           </button>
         </div>
       )}

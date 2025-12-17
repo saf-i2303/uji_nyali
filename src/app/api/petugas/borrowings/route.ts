@@ -5,9 +5,8 @@ export async function GET() {
   try {
     const db = await getConnection();
 
-    // -----------------------------
-    // 1️⃣ Ambil data peminjaman
-    // -----------------------------
+    // Ambil data peminjaman
+   
     const [borrowings]: any = await db.query(`
       SELECT 
         b.id,
@@ -24,9 +23,9 @@ export async function GET() {
       ORDER BY b.borrow_date DESC
     `);
 
-    // -----------------------------
-    // 2️⃣ Ambil detail buku
-    // -----------------------------
+   
+    //  Ambil detail buku
+  
     const [details]: any = await db.query(`
       SELECT 
         bd.borrowing_id,
@@ -39,9 +38,7 @@ export async function GET() {
       LEFT JOIN books ON books.id = bd.book_id
     `);
 
-    // -----------------------------
-    // 3️⃣ Gabungkan
-    // -----------------------------
+    // gabungkan
     const result = borrowings.map((row: any) => {
       const bookList = details
         .filter((d: any) => d.borrowing_id === row.id)

@@ -23,7 +23,7 @@ export default function PengembalianPage() {
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState<number | null>(null);
 
-  // 🔄 Fetch Data dari endpoint /api/petugas/return
+ 
   const fetchBorrowings = async () => {
     try {
       const res = await fetch("/api/petugas/return", { cache: "no-store" });
@@ -39,7 +39,7 @@ export default function PengembalianPage() {
     fetchBorrowings();
   }, []);
 
-  // 🔄 Hitung Denda
+ 
   const hitungDenda = (due_date: string) => {
     const today = new Date();
     const deadline = new Date(due_date);
@@ -52,7 +52,7 @@ export default function PengembalianPage() {
     return diffDays * 1000; // Rp 1.000 / hari
   };
 
-  // 🔄 Konfirmasi Pengembalian
+  
   const handleReturn = async (id: number) => {
     setProcessingId(id);
 
